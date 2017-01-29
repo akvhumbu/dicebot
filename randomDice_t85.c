@@ -1,14 +1,11 @@
 /*
 
-Name:		Random Dice
-Datum:		07.12.2016
-Autor:		Filip
-µC:			ATtiny 85
+Name:		dicebot
+Date:		07.12.2016
+Author:		ofes
+µC:		ATtiny85
 Edit:		08.12.2016, 10.12.2016, -
-Bemerkung:	Dies ist eine elektronische Würfelsimulation. Realisiert wird Sie mit einem
-			ATtiny 85. ACHTUNG: Manche Pins haben besondere Eigenschaften (siehe unten).
-			Grundsätzlich ist diese Programmausführung nicht sehr schön, da hier nicht
-			mit Interrupts sondern mit while-Schleifen und if-Abfragen gearbeitet wird.
+Comment:	
 
 */
 
@@ -18,44 +15,44 @@ Bemerkung:	Dies ist eine elektronische Würfelsimulation. Realisiert wird Sie mi
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define LED35 PB0		// Es können je zwei LED zusammengefasst werde!
-#define LED4 PB1		// ACHTUNG: siehe DS: PB4 und PB3 sind vertauscht!
-#define LED26 PB2		// ACHTUNG: PB5 kann nur als I/O-Pin verwendet, wenn man RSTDSBL aktiviert!
-#define LED17 PB3		// danach kann man aber NICHT mehr mit dem ISP programmieren! nur mehr mit dem stk500
-#define TASTER PB4
+#define LED35 PB0		// it is possible to connect two led's to the same output pin! 
+#define LED4 PB1		// CAUTION: check datasheet: PB4 & PB3 location!
+#define LED26 PB2		// CAUTION: it is only possible to use PB5 as an i/o-pin when RSTDSBL is aktivated (not used here)
+#define LED17 PB3		// you will no longer be able to use the ispmk2-programmer. only the stk500
+#define TASTER PB4		// TASTER = BUTTON in german, sorry guys :)
 
-void one();																					// void in de.: leere #themoreyouknow
+void one();																					
 void two();
 void three();
 void four();
 void five();
 void six();
 
-/*	Hauptprogramm	*/
+/*	main	*/
 
-void main()
+void main()	
 {
-	DDRB |= ( (1 << LED35) | (1 << LED4) | (1 << LED26) | (1 << LED17) );					// AUSGÄNGE
-	DDRB &= ~(1 << TASTER);																	// EINGÄNGE // keine internen Wiederstände nötig, da externe Pull-downs verwendet werden
+	DDRB |= ( (1 << LED35) | (1 << LED4) | (1 << LED26) | (1 << LED17) );					// OUTPUTS 
+	DDRB &= ~(1 << TASTER);											// INPUTS								
+														// no pull ups needed -> externeal pull downs in use (10k resistor)
 	
-	
-	while(1)									// durchlaufe die leere Schleife solange, bis der Taster HIGH am Eingang schaltet
+	while(1)												// stay inside endless loop until BUTTON == HIGH
 	{
-		while(PINB & (1 << TASTER) )			// wenn Tastereingang == HIGH führe diese Schleife aus
+		while(PINB & (1 << TASTER) )									// as soons as BUTTON == HIGH exec. this loop
 		{ 
 			one();
 			
-			if( !(PINB & (1 << TASTER)) )		// wenn Tastereingang == LOW führe diese if-Abfrage aus
+			if( !(PINB & (1 << TASTER)) )								// as soon as BUTTON == LOW exec. this if condition (break, to escape the 'while(PINB & (1 << TASTER) )' loop)
 			{
-				PORTB |= (1 << LED4);			// Lass die gegebene Nummer 1sec stehen und unterbreche dann diese Schleife: while(PINB & (1 << TASTER) )
+				PORTB |= (1 << LED4);								// leave the the led combination for 1 sec and 'break' the loop to: while(PINB & (1 << TASTER) )
 				_delay_ms(1000);
 				PORTB &= ~(1 << LED4);
 				_delay_ms(1000);
 				
-				break;							// Befehl zum unterbrechen
+				break;										
 			}
 			
-			two();								// mache den selben spaß für die restlichen Nummern :)
+			two();											// well thats it :)
 			
 			if( !(PINB & (1 << TASTER)) )
 			{
@@ -118,7 +115,7 @@ void main()
 	}
 }
 
-/*	Unterprogramme	*/
+/*	subroutines	*/
 
 void one()
 {
