@@ -44,7 +44,7 @@ void main()
 			
 			if( !(PINB & (1 << TASTER)) )								// as soon as BUTTON == LOW exec. this if condition (break, to escape the 'while(PINB & (1 << TASTER) )' loop)
 			{
-				PORTB |= (1 << LED4);								// leave the the led combination for 1 sec and 'break' the loop to: while(PINB & (1 << TASTER) )
+				PORTB |= (1 << LED4);								// leave the led combination for 1 sec and 'break' the loop to: while(PINB & (1 << TASTER) )
 				_delay_ms(1000);
 				PORTB &= ~(1 << LED4);
 				_delay_ms(1000);
